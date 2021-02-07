@@ -11,6 +11,28 @@
 
 set $mod Mod4
 
+# Xresources      var      value       fallback
+set_from_resource $bg      background  #19043C
+set_from_resource $fg      foreground  #F1F1F1
+set_from_resource $black   color0      #19043C
+set_from_resource $red     color1      #EE79A9
+set_from_resource $green   color2      #8C9440
+set_from_resource $yellow  color3      #DE935F
+set_from_resource $blue    color4      #05C6F1
+set_from_resource $purple  color5      #85678F
+set_from_resource $cyan    color6      #5E8D87
+set_from_resource $grey    color7      #969CD3
+
+# class                 bd    bg  txt    ind   child_bd
+client.focused          $grey $bg $fg    $blue $grey
+client.unfocused        $grey $bg $black $bg   $bg
+client.focused_inactive $grey $bg $black $bg   $bg
+client.urgent           $red  $bg $red   $red  $red
+client.placeholder      $grey $bg $bg    $bg   $bg
+client.background       $bg
+
+hide_edge_borders both
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 #font pango:monospace 8
@@ -30,13 +52,6 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
 
-# Use pactl to adjust volume in PulseAudio.
-set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
-
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
@@ -44,18 +59,23 @@ floating_modifier $mod
 bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
-bindsym $mod+Shift+q kill
+#bindsym $mod+Shift+q kill
+bindsym $mod+q kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec --no-startup-id dmenu_run
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec rofi -modi drun,run -show drun
 
-bindsym $mod+r exec --no-startup-id rofi -combi-mode window#drun#ssh -font "DejaVu Sans Mono 10" -show run
+bindsym Mod1+r exec --no-startup-id rofi -combi-mode window#drun#ssh -font "DejaVu Sans Mono 10" -show run
 
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
-bindsym $mod+d+e exec --no-startup-id i3-dmenu-desktop
+#bindsym $mod+d+e exec --no-startup-id i3-dmenu-desktop
+
+bindsym Mod1+o exec --no-startup-id libreoffice --writer
+
+bindsym Mod1+w exec --no-startup-id chromium
 
 # change focus
 bindsym $mod+j focus left
@@ -184,5 +204,13 @@ bar {
         status_command i3status
 }
 
-exec_always --no-startup-id feh --bg-scale /usr/local/share/backgroundds/wp3.jpg
+# open applications on specificc workspaces
+#assign [class="Chromium"] $ws2
+assign [class="^libreoffice$"] $ws3
+
+exec_always --no-startup-id feh --bg-scale /usr/local/share/backgrounds/wp3.jpg
 exec_always --no-startup-id killall picom; picom
+exec_always --no-startup-id numlockx on
+bindsym Print exec --no-startup-id scrot
+
+exec --no-startup-id thunar --daemon &
