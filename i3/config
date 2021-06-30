@@ -23,15 +23,18 @@ set_from_resource $purple  color5      #85678F
 set_from_resource $cyan    color6      #5E8D87
 set_from_resource $grey    color7      #969CD3
 
-# class                 bd    bg  txt    ind   child_bd
-client.focused          $grey $bg $fg    $blue $grey
-client.unfocused        $grey $bg $black $bg   $bg
-client.focused_inactive $grey $bg $black $bg   $bg
-client.urgent           $red  $bg $red   $red  $red
-client.placeholder      $grey $bg $bg    $bg   $bg
-client.background       $bg
+# class                 <border> <background> <text> <indicator> <child_border>
+client.focused          $fg	 $bg 		$fg    	$fg 		$fg
+client.unfocused        $bg	 $bg 		$black 	$bg   		$bg
+client.focused_inactive $bg	 $bg 		$black 	$bg   		$bg
+client.urgent           $red  	 $bg 		$red   	$red  		$red
+client.placeholder      $bg 	 $bg 		$bg    	$bg   		$bg
+client.background       $bg	$bg		$fg	$fg		$bg
 
-hide_edge_borders both
+# border style
+default_border pixel 1
+default_floating_border normal
+hide_edge_borders none
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -67,7 +70,7 @@ bindsym $mod+d exec --no-startup-id dmenu_run
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec rofi -modi drun,run -show drun
 
-bindsym Mod1+r exec --no-startup-id rofi -combi-mode window#drun#ssh -font "DejaVu Sans Mono 10" -show run
+bindsym Mod1+r exec --no-startup-id rofi -combi-mode window#drun#ssh -font "DejaVu Sans Mono 10" @import "Monokai.rasi" -show run
 
 # There also is i3-dmenu-desktop which only displays applications shipping a
 # .desktop file. It is a wrapper around dmenu, so you need that installed.
@@ -200,13 +203,41 @@ bindsym $mod+r mode "resize"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
+
+##### old i3 bar settings
+
+#bar {
+#        status_command i3status
+#}
+
+#######################
+##  i3 bar settings  ##
+#######################
+
 bar {
-        status_command i3status
+    i3bar_command i3bar
+    status_command i3status  
+    position bottom
+    tray_output primary
+   # bindsym button4 nop
+   # bindsym button5 nop
+   # font pango:InconsolataLGC Nerd Font Bold 9
+    # strip_workspace_numbers yes
+
+    colors {
+        background $bg-color
+        statusline #F9FAF9
+        separator  #454947
+
+        #                  border  	      	    background          text
+        focused_workspace  $bg          	$cyan	          	$bg
+        active_workspace   $bg          	$cyan 	          	$bg
+        inactive_workspace $bg		 	$bg		 	$cyan
+        urgent_workspace   $bg   	$red		   	$red
+	 binding_mode       $bg            $bg  	$fg
+    }
 }
 
-# open applications on specificc workspaces
-#assign [class="Chromium"] $ws2
-assign [class="^libreoffice$"] $ws3
 
 exec_always --no-startup-id feh --bg-scale /usr/local/share/backgrounds/wp3.jpg
 exec_always --no-startup-id killall picom; picom
@@ -214,3 +245,6 @@ exec_always --no-startup-id numlockx on
 bindsym Print exec --no-startup-id scrot
 
 exec --no-startup-id thunar --daemon &
+
+exec_always --no-startup-id /home/lonn/executables/i3-auto-layout
+
